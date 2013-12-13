@@ -1,21 +1,53 @@
 package com.example.envplotsandroid;
 
-import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.PreferenceCategory;
+import android.preference.EditTextPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
-public class PreferencesFragmentEnvPlots extends PreferenceFragment {
+public class PreferencesFragmentEnvPlots extends PreferenceFragment implements OnSharedPreferenceChangeListener {
 	//NumberPickerPreference dependentWidget;
 	
     @Override
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+        
+        SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
+        EditTextPreference serverAddressPref = (EditTextPreference)findPreference("server_address_preference");
+        serverAddressPref.setSummary(
+        		sp.getString("server_address_preference", 
+        				getString(R.string.preference_server_address_default)));
         //setPreferenceScreen(createPreferenceHierarchy());
         //dependentWidget.setDependency("auto_update_checkbox_preference");
+    }
+    
+    @Override
+	public void onResume() {
+    	super.onResume();
+    	getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+    	// refresh the probe select screen upon resuming.
+    	String prefScreenKey = "probe_select_screen_preference";
+		PreferenceScreen ps = (PreferenceScreen)findPreference(prefScreenKey);
+		SharedPreferences sp = getPreferenceScreen().getSharedPreferences();
+		ps.setSummary(sp.getString(prefScreenKey, "None"));
+    }
+    
+    @Override
+	public void onPause() {
+    	super.onPause();
+    	getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+    
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) { 
+    	Preference pref = findPreference(key);
+    	if (pref instanceof EditTextPreference) {
+    		EditTextPreference etp = (EditTextPreference)pref;
+    		pref.setSummary(etp.getText());
+    	}
     }
     
     /** DEPRECATED; WAS TESTING

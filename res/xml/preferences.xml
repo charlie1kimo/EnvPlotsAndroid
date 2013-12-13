@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory 
+        android:key="preference_server_title"
+        android:title="@string/preference_server_title">
+        <EditTextPreference 
+            android:key="server_address_preference"
+            android:title="@string/preference_server_address_title"
+            android:summary="@string/preference_server_address_default"
+            android:defaultValue="http://ric-cchen.zygo.com/"/>
+    </PreferenceCategory>
+    
+    <PreferenceCategory 
         android:key="preference_probe_title"
         android:title="@string/preferences_probe_title">
         <PreferenceScreen
             android:key="probe_select_screen_preference"
             android:title="@string/preferences_probe_select_screen_title"
-            android:summary="@string/preferences_probe_select_screen_summary">
+            android:summary="@string/preferences_probe_select_screen_summary"
+            android:defaultValue="@string/preferences_probe_select_screen_default_value">
             <intent
                 android:targetClass="com.example.envplotsandroid.SelectProbeActivity"
                 android:targetPackage="com.example.envplotsandroid" />
